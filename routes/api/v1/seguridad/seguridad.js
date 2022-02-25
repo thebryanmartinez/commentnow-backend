@@ -10,8 +10,8 @@ router.post("/signin", async (req, res) => {
     let rslt = await authSchema.validateAsync(req.body);
     console.log(rslt);
     try {
-      const { email, password } = req.body;
-      let rslt = usuariosModel.new(email, password)
+      const { names, username, email, description, birthdate, password } = req.body;
+      let rslt = usuariosModel.new(names, username, email, description, birthdate, password)
       res.status(200).json({ status: 'success', result: rslt })
     } catch (error) {
       console.error(error);
@@ -26,15 +26,15 @@ router.post("/signin", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const userInDb = await usuariosModel.getByEmail(email);
+    const { username, password } = req.body;
+    const userInDb = await usuariosModel.getByUsername(username);
     if (userInDb) {
       const isPasswordValid = await usuariosModel.comparePassword(password, userInDb.password)
       if (isPasswordValid) {
-        const { email, roles, _id } = userInDb;
+        const { username, roles, _id } = userInDb;
         const payload = {
-          jwt: jwt.sign({ email, roles, _id }, process.env.JWT_SECRET),
-          user: { email, password, _id }
+          jwt: jwt.sign({ username, roles, _id }, process.env.JWT_SECRET),
+          user: { username, password, _id }
         }
         res.status(200).json(payload);
       } else {

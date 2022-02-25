@@ -11,11 +11,18 @@ class Usuarios {
         db = database;
         this.collection = db.collection("Usuarios");
         if (process.env.MIGRATE === "true") {
+          this.collection.createIndex({"username":1}, { unique:true})
+          .then((rslt) => {
+            console.log("Indice creado satisfactoriamente", rslt)
+          }).catch((err)=>{
+            console.error("Error al crear el indice de username", err)
+          })
+
           this.collection.createIndex({"email":1}, { unique:true})
           .then((rslt) => {
             console.log("Indice creado satisfactoriamente", rslt)
           }).catch((err)=>{
-            console.error("Error al crear el indice", err)
+            console.error("Error al crear el indice de email", err)
           })
         }
       })
@@ -24,9 +31,13 @@ class Usuarios {
       });
   }
 
-  async new(email, password, roles = []) {
+  async new(names, username, email, description, birthdate, password, roles = []) {
     const newUsuario = {
+      names,
+      username,
       email,
+      description,
+      birthdate,
       password: await this.hashPassword(password),
       roles: [...roles, "public"],
     };
@@ -60,8 +71,8 @@ class Usuarios {
     return await this.collection.findOne(filter);
   }
 
-  async getByEmail(email) {
-    const filter = { email };
+  async getByUsername(username) {
+    const filter = { username };
     return await this.collection.findOne(filter);
   }
 
