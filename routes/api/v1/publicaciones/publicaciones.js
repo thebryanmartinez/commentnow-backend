@@ -13,8 +13,8 @@ router.get("/", (req, res) => {
 
 router.get("/all", async (req, res) => {
   try {
-    const rows = await pacienteModel.getAll();
-    res.status(200).json({ status: "ok", pacientes: rows });
+    const rows = await publicacionModel.getAll();
+    res.status(200).json({ status: "ok", publicaciones: rows });
   } catch (ex) {
     console.log(ex);
     res.status(500).json({ status: "failed" });
@@ -24,7 +24,7 @@ router.get("/all", async (req, res) => {
 router.get("/byid/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const row = await pacienteModel.getById(id);
+    const row = await publicacionModel.getById(id);
     res.status(200).json({ status: "ok", pacientes: row });
   } catch (ex) {
     console.log(ex);
@@ -35,7 +35,7 @@ router.get("/byid/:id", async (req, res) => {
 router.post("/new", async (req, res) => {
   const { nombres, apellidos, identidad, email, telefono } = req.body;
   try {
-    rslt = await pacienteModel.new(
+    rslt = await publicacionModel.new(
       nombres,
       apellidos,
       identidad,
@@ -59,7 +59,7 @@ router.put("/update/:id", async (req, res) => {
   try {
     const { nombres, apellidos, identidad, email, telefono } = req.body;
     const { id } = req.params;
-    const result = await pacienteModel.updateOne(
+    const result = await publicacionModel.updateOne(
       id,
       nombres,
       apellidos,
@@ -77,7 +77,7 @@ router.put("/update/:id", async (req, res) => {
 router.delete("/delete/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pacienteModel.deleteOne(id);
+    const result = await publicacionModel.deleteOne(id);
     res.status(200).json({ status: "ok", result });
   } catch (error) {
     console.error(error);

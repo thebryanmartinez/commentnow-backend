@@ -20,14 +20,14 @@ class Publicaciones {
   }
 
   async new(nombres, apellidos, identidad, telefono, correo) {
-    const newPaciente = {
+    const newPublicacion = {
       nombres,
       apellidos,
       identidad,
       telefono,
       correo
     };
-    return await this.collection.insertOne(newPaciente);
+    return await this.collection.insertOne(newPublicacion);
   }
 
   async getAll() {
