@@ -8,7 +8,7 @@ const getDb = async () => {
     return db;
   }
   if(!client){
-    client = await MongoClient.connect(process.env.MONGOURI, {
+    client = await MongoClient.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
