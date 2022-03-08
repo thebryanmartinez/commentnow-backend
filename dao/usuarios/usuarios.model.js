@@ -1,6 +1,6 @@
 const ObjectId = require("mongodb").ObjectId;
 const getDb = require("../mongodb");
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
 
 let db = null;
 class Usuarios {
@@ -11,19 +11,19 @@ class Usuarios {
         db = database;
         this.collection = db.collection("Usuarios");
         if (process.env.MIGRATE === "true") {
-          this.collection.createIndex({"username":1}, { unique:true})
-          .then((rslt) => {
-            console.log("Indice creado satisfactoriamente", rslt)
-          }).catch((err)=>{
-            console.error("Error al crear el indice de username", err)
-          })
+          this.collection.createIndex({ "username": 1 }, { unique: true })
+            .then((rslt) => {
+              console.log("Indice creado satisfactoriamente", rslt)
+            }).catch((err) => {
+              console.error("Error al crear el indice de username", err)
+            })
 
-          this.collection.createIndex({"email":1}, { unique:true})
-          .then((rslt) => {
-            console.log("Indice creado satisfactoriamente", rslt)
-          }).catch((err)=>{
-            console.error("Error al crear el indice de email", err)
-          })
+          this.collection.createIndex({ "email": 1 }, { unique: true })
+            .then((rslt) => {
+              console.log("Indice creado satisfactoriamente", rslt)
+            }).catch((err) => {
+              console.error("Error al crear el indice de email", err)
+            })
         }
       })
       .catch((err) => {
@@ -31,7 +31,7 @@ class Usuarios {
       });
   }
 
-  async new(names, username, email, description, birthdate, password, recoveryQuestion, recoveryAnswer, roles = [] ) {
+  async new(names, username, email, description, birthdate, password, recoveryQuestion, recoveryAnswer, roles = []) {
     const newUsuario = {
       names,
       username,
@@ -40,7 +40,7 @@ class Usuarios {
       birthdate,
       password: await this.hashPassword(password),
       roles: [...roles, "public"],
-      passwordRecovery: {question: recoveryQuestion, answer: recoveryAnswer}
+      passwordRecovery: { question: recoveryQuestion, answer: await this.hashPassword(recoveryAnswer)}
     };
     return await this.collection.insertOne(newUsuario);
   }
@@ -77,24 +77,32 @@ class Usuarios {
     return await this.collection.findOne(filter);
   }
 
-  async hashPassword(rawPassword){
-    return await bcrypt.hash(rawPassword, 10) 
+  async hashPassword(rawPassword) {
+    return await bcrypt.hash(rawPassword, 10)
   }
 
-  async comparePassword (rawPassword, dbPassword){
+  async comparePassword(rawPassword, dbPassword) {
     return await bcrypt.compare(rawPassword, dbPassword)
   }
 
-  async getUserRecoveryAnswer(username){
+  async hashRecoveryAnswer(rawRecoveryAnswer) {
+    return await bcrypt.hash(rawRecoveryAnswer, 10)
+  }
+
+  async compareRecoveryAnswer(rawRecoveryAnswer, dbRecoveryAnswer) {
+    return await bcrypt.compare(rawRecoveryAnswer, dbRecoveryAnswer)
+  }
+
+  async getUserRecoveryAnswer(username) {
     const filter = { username };
     const user = await this.collection.findOne(filter);
     return user.passwordRecovery.answer;
   }
 
-  async updateOne(username, password){
+  async updateOne(username, password) {
     const filter = { username }
     const updateCmd = {
-      '$set':{
+      '$set': {
         password: await this.hashPassword(password)
       }
     };

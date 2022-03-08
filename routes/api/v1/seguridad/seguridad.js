@@ -54,7 +54,8 @@ router.put("/recoverpassword", async (req, res) => {
     const userInDb = await usuariosModel.getByUsername(username);
     if (userInDb) {
       const answerInDb = await usuariosModel.getUserRecoveryAnswer(username);
-      if (answerInDb == recoveryAnswer) {
+      const isAnswerValid = await usuariosModel.compareRecoveryAnswer(recoveryAnswer, answerInDb)
+      if (isAnswerValid) {
         await usuariosModel.updateOne(username, newPassword);
         res.status(200).json({ status: "Ok", msg: "Su contraseña ha sido actualizada" })
       } else {
