@@ -31,7 +31,7 @@ class Usuarios {
       });
   }
 
-  async new(names, username, email, description, birthdate, password, roles = []) {
+  async new(names, username, email, description, birthdate, password, recoveryQuestion, recoveryAnswer, roles = [] ) {
     const newUsuario = {
       names,
       username,
@@ -40,6 +40,7 @@ class Usuarios {
       birthdate,
       password: await this.hashPassword(password),
       roles: [...roles, "public"],
+      passwordRecovery: {question: recoveryQuestion, answer: recoveryAnswer}
     };
     return await this.collection.insertOne(newUsuario);
   }
@@ -82,6 +83,22 @@ class Usuarios {
 
   async comparePassword (rawPassword, dbPassword){
     return await bcrypt.compare(rawPassword, dbPassword)
+  }
+
+  async getUserRecoveryAnswer(username){
+    const filter = { username };
+    const user = await this.collection.findOne(filter);
+    return user.passwordRecovery.answer;
+  }
+
+  async updateOne(username, password){
+    const filter = { username }
+    const updateCmd = {
+      '$set':{
+        password: await this.hashPassword(password)
+      }
+    };
+    return await this.collection.updateOne(filter, updateCmd);
   }
 }
 

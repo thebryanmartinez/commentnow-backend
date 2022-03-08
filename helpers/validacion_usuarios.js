@@ -6,7 +6,9 @@ const authSchema = Joi.object({
   email: Joi.string().email().lowercase().required().trim(),
   description: Joi.string().max(100).trim(),
   password: Joi.string().min(5).required().trim(),
-  birthdate: Joi.date().greater('1950-1-1').less('now').iso().required()
+  birthdate: Joi.date().greater('1950-1-1').less('now').iso().required(),
+  recoveryQuestion: Joi.string().min(5).max(50).required().trim(),
+  recoveryAnswer: Joi.string().max(50).required().trim()
 })
 
 module.exports = { authSchema }
