@@ -108,6 +108,18 @@ class Usuarios {
     };
     return await this.collection.updateOne(filter, updateCmd);
   }
+  async updateOneEmail(id, email) {
+    const filter = { _id: new ObjectId(id) };
+    const updateCmd = {
+        '$set': {
+            email,
+        }
+    };
+    return await this.collection.updateOne(filter, updateCmd);
+  }
+
 }
+
+
 
 module.exports = Usuarios;
