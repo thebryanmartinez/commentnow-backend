@@ -51,6 +51,17 @@ class Publicaciones {
         return await this.collection.updateOne(filter, updateCmd);
     }
 
+
+    async updateOne(id, id_usuario, likes) {
+        const filter = { _id: new ObjectId(id) };
+
+        const updateCmd = {
+            '$set': {
+                likes,
+            }
+        };
+        return await this.collection.updateOne(filter, updateCmd);
+    }
     async deleteOne(id) {
         const _id = new ObjectId(id);
         const filter = { _id };

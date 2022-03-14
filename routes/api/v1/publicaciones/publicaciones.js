@@ -21,6 +21,8 @@ router.get("/all", async(req, res) => {
     }
 });
 
+
+
 router.post("/new", async(req, res) => {
     let destacada = 0,
         likes = 0;
@@ -79,5 +81,26 @@ router.put("/actualizarDestacada/:id", async(req, res) => {
         res.status(500).json({ status: "failed" });
     }
 });
+
+//get likes
+router.put("/actualizarLikes/:id", async(req, res) => {
+    try {
+        let likes;
+        const { id } = req.params;
+        const row = await publicacionModel.getById(id);
+        if (row.likes) {
+            likes = likes++;
+        }
+        const result = await publicacionModel.updateOne(
+            id,
+            likes
+        );
+        res.status(200).json({ status: "ok", result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: "failed" });
+    }
+});
+
 
 module.exports = router;
