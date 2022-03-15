@@ -33,5 +33,18 @@ router.put('/updateUsername/:id', async (req, res) => {
       res.status(500).json({ status: 'failed' });
     }
   });
+router.delete('/delete/:id', async(req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await usuarioModel.deleteOne(id);
+        res.status(200).json({
+            status: 'ok',
+            result
+        });
+    } catch (ex) {
+        console.log(ex);
+        res.status(500).json({ status: 'failed' });
+    }
+});
 
 module.exports = router;
