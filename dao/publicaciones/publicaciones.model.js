@@ -19,13 +19,14 @@ class Publicaciones {
             });
     }
 
-    async new(id_usuario, contenido, fecha, destacada, likes) {
+    async new(id_usuario, contenido, fecha, destacada, likes, comentarios) {
         const newPublicacion = {
             id_usuario,
             contenido,
             fecha,
             destacada,
-            likes
+            likes,
+            comentarios
         };
         return await this.collection.insertOne(newPublicacion);
     }
@@ -46,6 +47,16 @@ class Publicaciones {
         const updateCmd = {
             '$set': {
                 destacada,
+            }
+        };
+        return await this.collection.updateOne(filter, updateCmd);
+    }
+
+    async updateOneComentario(id, comentarios) {
+        const filter = { _id: new ObjectId(id) };
+        const updateCmd = {
+            '$set': {
+                comentarios,
             }
         };
         return await this.collection.updateOne(filter, updateCmd);

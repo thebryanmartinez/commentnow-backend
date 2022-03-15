@@ -31,7 +31,8 @@ router.post("/new", async(req, res) => {
             contenido,
             fecha,
             destacada,
-            likes
+            likes,
+            comentarios
         );
         res.status(200).json({
             status: "ok",
@@ -58,6 +59,21 @@ router.delete("/delete/:id", async(req, res) => {
         res.status(500).json({ status: "failed" });
     }
 });
+
+router.put('/updateComentario/:id', async (req, res) => {
+    try{
+      const { comentario } = req.body;
+      const { id } = req.params;
+      const result = await usuarioModel.updateOneComentario(id, comentario);
+      res.status(200).json({
+        status:'ok',
+        result
+      });
+    } catch(ex){
+      console.log(ex);
+      res.status(500).json({ status: 'failed' });
+    }
+  });
 
 router.put("/actualizarDestacada/:id", async(req, res) => {
     try {
