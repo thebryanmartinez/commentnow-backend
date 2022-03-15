@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Publicaciones = require("../../../../dao/publicaciones/publicaciones.model");
-const publicacionModel = new Publicaciones();
+const publicacionesModel = new Publicaciones();
 
 router.get("/", (req, res) => {
     res.status(200).json({
@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 
 router.get("/all", async(req, res) => {
     try {
-        const rows = await publicacionModel.getAll();
+        const rows = await publicacionesModel.getAll();
         res.status(200).json({ status: "ok", publicaciones: rows });
     } catch (ex) {
         console.log(ex);
@@ -21,14 +21,12 @@ router.get("/all", async(req, res) => {
     }
 });
 
-
-
 router.post("/new", async(req, res) => {
     let destacada = 0,
         likes = 0;
     const { contenido, fecha } = req.body;
     try {
-        rslt = await publicacionModel.new(
+        rslt = await publicacionesModel.new(
             req.user._id,
             contenido,
             fecha,
@@ -49,12 +47,10 @@ router.post("/new", async(req, res) => {
     }
 }); //POST /new
 
-
-
 router.delete("/delete/:id", async(req, res) => {
     try {
         const { id } = req.params;
-        const result = await publicacionModel.deleteOne(id);
+        const result = await publicacionesModel.deleteOne(id);
         res.status(200).json({ status: "ok", result });
     } catch (error) {
         console.error(error);
@@ -66,7 +62,7 @@ router.put('/updateComentario/:id', async (req, res) => {
     try{
       const { comentario } = req.body;
       const { id } = req.params;
-      const result = await usuarioModel.updateOneComentario(id, comentario);
+      const result = await publicacionesModel.updateOneComentario(id, comentario);
       res.status(200).json({
         status:'ok',
         result
@@ -81,13 +77,13 @@ router.put("/actualizarDestacada/:id", async(req, res) => {
     try {
         let destacada;
         const { id } = req.params;
-        const row = await publicacionModel.getById(id);
+        const row = await publicacionesModel.getById(id);
         if (row.destacada) {
             destacada = 0;
         } else {
             destacada = 1;
         }
-        const result = await publicacionModel.updateOne(
+        const result = await publicacionesModel.updateOne(
             id,
             destacada
         );
@@ -99,24 +95,19 @@ router.put("/actualizarDestacada/:id", async(req, res) => {
 });
 
 //get likes
-router.put("/actualizarLikes/:id", async(req, res) => {
+router.put("/actualizarlikes/:id", async(req, res) => {
     try {
-        let likes;
         const { id } = req.params;
-        const row = await publicacionModel.getById(id);
-        if (row.likes) {
-            likes = likes++;
-        }
-        const result = await publicacionModel.updateOne(
-            id,
-            likes
-        );
-        res.status(200).json({ status: "ok", result });
+        let likesInDb = await publicacionesModel.getLikes(id);
+        console.log(likesInDb)
+        let likes = likesInDb + 1 ;
+        console.log(likes)
+        await publicacionesModel.addLike(id, likes)
+        res.status(200).json({ status: "ok", msg:"Su like fue añadido" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: "failed" });
     }
 });
-
 
 module.exports = router;
