@@ -8,7 +8,7 @@ router.put('/updateEmail/:id', async (req, res) => {
     try{
       const { New_email } = req.body;
       const { id } = req.params;
-      const result = await usuarioModel.updateOneEmail(id, New_email);
+      const result = await usuarioModel.updateEmail(id, New_email);
       res.status(200).json({
         status:'ok',
         result
@@ -23,7 +23,7 @@ router.put('/updateUsername/:id', async (req, res) => {
     try{
       const { username } = req.body;
       const { id } = req.params;
-      const result = await usuarioModel.updateOneUsername(id, username);
+      const result = await usuarioModel.updateUsername(id, username);
       res.status(200).json({
         status:'ok',
         result
@@ -33,10 +33,10 @@ router.put('/updateUsername/:id', async (req, res) => {
       res.status(500).json({ status: 'failed' });
     }
   });
-router.delete('/delete/:id', async(req, res) => {
+router.delete('/deleteuser/:id', async(req, res) => {
     try {
         const { id } = req.params;
-        const result = await usuarioModel.deleteOne(id);
+        const result = await usuarioModel.deleteUser(id);
         res.status(200).json({
             status: 'ok',
             result

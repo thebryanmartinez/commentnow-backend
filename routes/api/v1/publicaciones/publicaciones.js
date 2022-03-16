@@ -24,7 +24,7 @@ router.get("/all", async(req, res) => {
 router.post("/new", async(req, res) => {
     let destacada = 0,
         likes = 0;
-    const { contenido, fecha } = req.body;
+    const { contenido, fecha, comentarios } = req.body;
     try {
         rslt = await publicacionesModel.new(
             req.user._id,
@@ -58,7 +58,7 @@ router.delete("/delete/:id", async(req, res) => {
     }
 });
 
-router.put('/updateComentario/:id', async (req, res) => {
+router.put('/updatecomentario/:id', async (req, res) => {
     try{
       const { comentario } = req.body;
       const { id } = req.params;
@@ -73,7 +73,7 @@ router.put('/updateComentario/:id', async (req, res) => {
     }
   });
 
-router.put("/actualizarDestacada/:id", async(req, res) => {
+router.put("/actualizardestacada/:id", async(req, res) => {
     try {
         let destacada;
         const { id } = req.params;
