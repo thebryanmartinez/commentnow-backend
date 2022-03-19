@@ -25,8 +25,7 @@ class Publicaciones {
             contenido,
             fecha,
             destacada,
-            likes,
-            comentarios
+            likes
         };
         return await this.collection.insertOne(newPublicacion);
     }
@@ -77,6 +76,19 @@ class Publicaciones {
             }
         };
         return await this.collection.updateOne(filter, updateCmd)
+    }
+    
+    async newComentario (id, id_usuario, comentario){
+        const addComentario = {
+          "$addToSet": {
+            comentarios: {
+                id_usuario: id_usuario,
+                comentario: comentario
+            }
+          }
+        }
+        const filter = { _id: new ObjectId(id) };
+        return await this.collection.updateOne(filter, addComentario);
     }
 
     async deleteOne(id) {

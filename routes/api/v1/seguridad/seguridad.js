@@ -3,7 +3,7 @@ const router = express.Router();
 const Usuarios = require('../../../../dao/usuarios/usuarios.model');
 const usuariosModel = new Usuarios();
 const jwt = require('jsonwebtoken');
-const { authSchema } = require('../../../../helpers/validacion_usuarios');
+const { authSchema, validatePassword } = require('../../../../helpers/validacion_usuarios');
 
 router.post("/signin", async (req, res) => {
   try {
@@ -50,23 +50,31 @@ router.post("/login", async (req, res) => {
 
 router.put("/recoverpassword", async (req, res) => {
   try {
-    const { username, recoveryAnswer, newPassword } = req.body;
-    const userInDb = await usuariosModel.getByUsername(username);
-    if (userInDb) {
-      const answerInDb = await usuariosModel.getUserRecoveryAnswer(username);
-      const isAnswerValid = await usuariosModel.compareRecoveryAnswer(recoveryAnswer, answerInDb)
-      if (isAnswerValid) {
-        await usuariosModel.updatePassword(username, newPassword);
-        res.status(200).json({ status: "Ok", msg: "Su contraseña ha sido actualizada" })
+    const { newPassword } = req.body;
+    let rslt = await validatePassword.validateAsync(newPassword)
+    console.log(rslt)
+    try {
+      const { username, recoveryAnswer, newPassword } = req.body;
+      const userInDb = await usuariosModel.getByUsername(username);
+      if (userInDb) {
+        const answerInDb = await usuariosModel.getUserRecoveryAnswer(username);
+        const isAnswerValid = await usuariosModel.compareRecoveryAnswer(recoveryAnswer, answerInDb)
+        if (isAnswerValid) {
+          await usuariosModel.updatePassword(username, newPassword);
+          res.status(200).json({ status: "Ok", msg: "Su contraseña ha sido actualizada" })
+        } else {
+          res.status(406).json({ status: "failed", msg: "Datos enviados invalidos" })
+        }
       } else {
-        res.status(406).json({ status: "failed", msg: "Datos enviados invalidos" })
+        res.status(404).json({ status: "failed", msg: "El usuario no fue encontrado" })
       }
-    } else {
-      res.status(404).json({ status: "failed", msg: "El usuario no fue encontrado" })
+    } catch (error) {
+      console.error(error);
+      res.status(400).json({ status: "failed" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ status: "failed" });
+    console.log(error)
+    res.status(422).json({ status: 'Contraseña no valida' });
   }
 });
 

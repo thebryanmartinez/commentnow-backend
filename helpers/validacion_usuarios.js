@@ -11,4 +11,10 @@ const authSchema = Joi.object({
   recoveryAnswer: Joi.string().max(50).required().trim()
 })
 
-module.exports = { authSchema }
+const validateEmail = Joi.string().email().lowercase().required().trim()
+
+const validateUsername = Joi.string().min(3).max(20).required().trim()
+
+const validatePassword = Joi.string().min(5).required().trim()
+
+module.exports = { authSchema, validateEmail, validateUsername, validatePassword }
