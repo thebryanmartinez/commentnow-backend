@@ -56,17 +56,6 @@ router.post("/new", async (req, res) => {
 
 });
 
-router.delete("/delete/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const result = await publicacionesModel.deleteComentario(id);
-        res.status(200).json({ status: "ok", result });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ status: "failed" });
-    }
-});
-
 router.put('/nuevocomentario/:id', async (req, res) => {   
     try {
         const { comentario } = req.body;
@@ -113,5 +102,17 @@ router.put("/actualizarlikes/:id", async (req, res) => {
         res.status(500).json({ status: "failed" });
     }
 });
+
+router.delete('/eliminarpublicacion/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await publicacionesModel.deletePublicacion(id);
+      res.status(200).json({ status: 'ok', result });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ status: 'failed' });
+    }
+  });
+//TODO: Eliminar publicacion
 
 module.exports = router;

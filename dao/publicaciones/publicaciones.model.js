@@ -58,32 +58,31 @@ class Publicaciones {
         return publicacion.likes
     }
 
-    async addLike(id, likes){
-        const filter = {_id: new ObjectId(id)};
+    async addLike(id, likes) {
+        const filter = { _id: new ObjectId(id) };
         const updateCmd = {
-            '$set':{
+            '$set': {
                 likes,
             }
         };
         return await this.collection.updateOne(filter, updateCmd)
     }
 
-    async newComentario (id, id_usuario, comentario){
+    async newComentario(id, id_usuario, comentario) {
         const addComentario = {
-          "$addToSet": {
-            comentarios: {
-                id_usuario: id_usuario,
-                comentario: comentario
+            "$addToSet": {
+                comentarios: {
+                    id_usuario: id_usuario,
+                    comentario: comentario
+                }
             }
-          }
         }
         const filter = { _id: new ObjectId(id) };
         return await this.collection.updateOne(filter, addComentario);
     }
 
-    async deleteComentario(id) {
-        const _id = new ObjectId(id);
-        const filter = { _id };
+    async deletePublicacion(id) {
+        const filter = { _id: new ObjectId(id) };
         return await this.collection.deleteOne(filter);
     }
 }
