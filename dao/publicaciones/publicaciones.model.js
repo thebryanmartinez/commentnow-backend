@@ -19,9 +19,10 @@ class Publicaciones {
             });
     }
 
-    async new(id_usuario, contenido, fecha, destacada, likes, comentarios) {
+    async new(id_usuario, username, contenido, fecha, destacada, likes) {
         const newPublicacion = {
             id_usuario,
+            username,
             contenido,
             fecha,
             destacada,
@@ -39,6 +40,12 @@ class Publicaciones {
         const _id = new ObjectId(id);
         const filter = { _id };
         return await this.collection.findOne(filter);
+    }
+
+    async getAllUser(user_id) {
+        const filter = { id_usuario: user_id };
+        const cursor = this.collection.find(filter);
+        return await cursor.toArray();
     }
 
     async updateDestacada(id, destacada) {

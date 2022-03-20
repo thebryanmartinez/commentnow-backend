@@ -35,17 +35,7 @@ class Usuarios {
       });
   }
 
-  async new(
-    names,
-    username,
-    email,
-    description,
-    birthdate,
-    password,
-    recoveryQuestion,
-    recoveryAnswer,
-    roles = []
-  ) {
+  async new(names, username, email, description, birthdate, password, recoveryQuestion, recoveryAnswer, roles = []) {
     const newUsuario = {
       names,
       username,

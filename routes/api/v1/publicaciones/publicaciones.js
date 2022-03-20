@@ -23,6 +23,16 @@ router.get("/all", async (req, res) => {
     }
 });
 
+router.get("/allusuario", async (req, res) => {
+    try {
+        const rows = await publicacionesModel.getAllUser(req.user._id);
+        res.status(200).json({ status: "ok", publicaciones: rows })
+    } catch (error) {
+        console.log(ex);
+        res.status(500).json({ status: "failed" });
+    }
+})
+
 router.post("/new", async (req, res) => {
     try {
         const { contenido } = req.body;
@@ -33,6 +43,7 @@ router.post("/new", async (req, res) => {
             let fecha = formatISO(startOfToday(), { representation: 'date' })
             rslt = await publicacionesModel.new(
                 req.user._id,
+                req.user.username,
                 contenido,
                 fecha,
                 destacada,
@@ -113,6 +124,5 @@ router.delete('/eliminarpublicacion/:id', async (req, res) => {
       res.status(500).json({ status: 'failed' });
     }
   });
-//TODO: Eliminar publicacion
 
 module.exports = router;
