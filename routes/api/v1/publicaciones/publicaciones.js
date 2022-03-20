@@ -4,14 +4,14 @@ let startOfToday = require('date-fns/startOfToday');
 let formatISO = require('date-fns/formatISO')
 const Publicaciones = require("../../../../dao/publicaciones/publicaciones.model");
 const publicacionesModel = new Publicaciones();
-const { validateContenido } = require("../../../../helpers/validacion_publicaciones");
+const { validateContenido, validateComentario } = require("../../../../helpers/validacion_publicaciones");
 
 router.get("/", (req, res) => {
     res.status(200).json({
         endpoint: "Publicaciones",
         updates: new Date(2022, 0, 19, 18, 41, 0),
     });
-}); //GET /
+});
 
 router.get("/all", async (req, res) => {
     try {
@@ -29,7 +29,7 @@ router.post("/new", async (req, res) => {
         let validacion = await validateContenido.validateAsync(contenido)
         console.log(validacion)
         try {
-            let destacada = 0, likes = 0;
+            let destacada = false, likes = 0;
             let fecha = formatISO(startOfToday(), { representation: 'date' })
             rslt = await publicacionesModel.new(
                 req.user._id,
@@ -59,7 +59,7 @@ router.post("/new", async (req, res) => {
 router.delete("/delete/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await publicacionesModel.deleteOne(id);
+        const result = await publicacionesModel.deleteComentario(id);
         res.status(200).json({ status: "ok", result });
     } catch (error) {
         console.error(error);
@@ -67,44 +67,31 @@ router.delete("/delete/:id", async (req, res) => {
     }
 });
 
-router.put('/nuevocomentario/:id', async (req, res) => {
+router.put('/nuevocomentario/:id', async (req, res) => {   
     try {
         const { comentario } = req.body;
-        const { id } = req.params;
-        let result = await publicacionesModel.newComentario(id, req.user._id, comentario)
-        res.status(200).json({ status: "ok", result });
+        let validacion = await validateComentario.validateAsync(comentario)
+        console.log(validacion)
+        try {
+            const { id } = req.params;
+            let result = await publicacionesModel.newComentario(id, req.user._id, comentario)
+            res.status(200).json({ status: "ok", result });
+        } catch (error) {
+            console.log(ex);
+            res.status(500).json({ status: 'failed' });
+        }
     } catch (error) {
         console.log(ex);
         res.status(500).json({ status: 'failed' });
     }
 })
 
-router.put('/updatecomentario/:id', async (req, res) => {
-    try {
-        const { comentario } = req.body;
-        const { id } = req.params;
-        const result = await publicacionesModel.updateOneComentario(id, comentario);
-        res.status(200).json({
-            status: 'ok',
-            result
-        });
-    } catch (ex) {
-        console.log(ex);
-        res.status(500).json({ status: 'failed' });
-    }
-});
-
 router.put("/actualizardestacada/:id", async (req, res) => {
     try {
-        let destacada;
         const { id } = req.params;
         const row = await publicacionesModel.getById(id);
-        if (row.destacada) {
-            destacada = 0;
-        } else {
-            destacada = 1;
-        }
-        const result = await publicacionesModel.updateOne(id, destacada);
+        let destacada = !row.destacada;
+        const result = await publicacionesModel.updateDestacada(id, destacada);
         res.status(200).json({ status: "ok", result });
     } catch (error) {
         console.error(error);
@@ -112,7 +99,6 @@ router.put("/actualizardestacada/:id", async (req, res) => {
     }
 });
 
-//get likes
 router.put("/actualizarlikes/:id", async (req, res) => {
     try {
         const { id } = req.params;

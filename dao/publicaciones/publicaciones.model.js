@@ -41,21 +41,11 @@ class Publicaciones {
         return await this.collection.findOne(filter);
     }
 
-    async updateOne(id, destacada) {
+    async updateDestacada(id, destacada) {
         const filter = { _id: new ObjectId(id) };
         const updateCmd = {
             '$set': {
                 destacada,
-            }
-        };
-        return await this.collection.updateOne(filter, updateCmd);
-    }
-
-    async updateOneComentario(id, comentarios) {
-        const filter = { _id: new ObjectId(id) };
-        const updateCmd = {
-            '$set': {
-                comentarios,
             }
         };
         return await this.collection.updateOne(filter, updateCmd);
@@ -77,7 +67,7 @@ class Publicaciones {
         };
         return await this.collection.updateOne(filter, updateCmd)
     }
-    
+
     async newComentario (id, id_usuario, comentario){
         const addComentario = {
           "$addToSet": {
@@ -91,7 +81,7 @@ class Publicaciones {
         return await this.collection.updateOne(filter, addComentario);
     }
 
-    async deleteOne(id) {
+    async deleteComentario(id) {
         const _id = new ObjectId(id);
         const filter = { _id };
         return await this.collection.deleteOne(filter);
