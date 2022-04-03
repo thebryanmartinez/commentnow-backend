@@ -13,5 +13,5 @@ router.use("/seguridad", verifyApiHeaderToken, seguridadRoutes);
 //Middlewares
 router.use("/publicaciones", verifyApiHeaderToken, jwtMiddleWare, publicacionesRoutes);
 //router.use("/usuarios", usuariosRoutes);
-router.use("/usuarios", verifyApiHeaderToken, jwtMiddleWare, usuariosRoutes);
+router.use("/usuarios", verifyApiHeaderToken, usuariosRoutes);
 module.exports = router;
