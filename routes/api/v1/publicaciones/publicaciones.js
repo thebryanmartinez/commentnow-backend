@@ -28,7 +28,7 @@ router.get("/allusuario", async (req, res) => {
         const rows = await publicacionesModel.getAllUser(req.user._id);
         res.status(200).json({ status: "ok", publicaciones: rows })
     } catch (error) {
-        console.log(ex);
+        console.log(error);
         res.status(500).json({ status: "failed" });
     }
 })
