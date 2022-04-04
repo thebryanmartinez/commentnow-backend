@@ -11,7 +11,7 @@ router.use(passport.initialize())
     // Public
 router.use("/seguridad", verifyApiHeaderToken, seguridadRoutes);
 //Middlewares
-router.use("/publicaciones", verifyApiHeaderToken, jwtMiddleWare, publicacionesRoutes);
+router.use("/publicaciones", verifyApiHeaderToken, publicacionesRoutes);
 //router.use("/usuarios", usuariosRoutes);
 router.use("/usuarios", verifyApiHeaderToken, usuariosRoutes);
 module.exports = router;

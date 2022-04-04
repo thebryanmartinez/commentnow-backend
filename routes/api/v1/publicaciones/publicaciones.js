@@ -125,4 +125,16 @@ router.delete('/eliminarpublicacion/:id', async (req, res) => {
     }
   });
 
+  router.get('/byByUsername/:username', async(req, res) => {
+    try {
+        const { username } = req.params;
+        const row = await publicacionesModel.getByUsername(username);
+        res.status(200).json({ status: 'ok', usuario: row });
+    } catch (ex) {
+        console.log(ex);
+        res.status(500).json({ status: 'failed' });
+    }
+});
+
+
 module.exports = router;

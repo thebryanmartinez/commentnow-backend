@@ -35,6 +35,11 @@ class Publicaciones {
         const cursor = this.collection.find({});
         return await cursor.toArray();
     }
+    async getByUsername(username) {
+        const filter = { username };
+        const publi =  this.collection.find(filter);
+        return await publi.toArray();
+      }
 
     async getById(id) {
         const _id = new ObjectId(id);
