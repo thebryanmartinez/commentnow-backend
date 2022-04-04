@@ -81,7 +81,8 @@ class Usuarios {
 
   async getByUsername(username) {
     const filter = { username };
-    return await this.collection.findOne(filter);
+    const user =  this.collection.find(filter);
+    return await user.toArray();
   }
 
   async hashPassword(rawPassword) {
