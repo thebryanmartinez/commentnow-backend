@@ -8,6 +8,9 @@ La API va conectada a una aplicación web del mismo nombre, llamado CommentNow. 
 Aquí está el repositorio de la aplicación web hecha con React:
 - Aplicación web CommentNow: https://github.com/Bryanmartz972/commentnow-frontend.git
 
+## Características
+- Inicio de sesión y creación de usuarios
+- Validaciones de backend
 
 ## Autores
 El equipo que me ayudo a elaborar este proyecto son compañeros de la misma universidad para la misma clase. Estos son los perfiles de GitHub del equipo (incluyéndome):
